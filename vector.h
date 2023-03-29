@@ -220,7 +220,7 @@ MyVector<_T> operator-(const MyVector<_T> &v1, const MyVector<_T> &v2) {
 template<typename _T>
 MyVector<_T> operator*(const MyVector<_T> &v1, const _T &val) {
     MyVector<_T> new_vector (v1);
-    v1 *= val;
+    new_vector *= val;
 
     return new_vector;
 }
@@ -231,7 +231,7 @@ MyVector<_T> operator/(const MyVector<_T> &v1, const _T &val) {
         throw Exceptions("division by zero.");
     }
     MyVector<_T> new_vector (v1);
-    v1 /= val;
+    new_vector /= val;
 
     return new_vector;
 }
