@@ -3,9 +3,14 @@
 void tests () {
     constructors_check_1();
     constructors_check_2();
+    constructor_move();
     operations_check_1();
-    operations_check_2();
+    get_elem_check();
+    to_array_check();
+    operators_check ();
     math_operations_1();
+    math_operations_0 ();
+    math_empty_vec();
     math_operations_2 ();
     math_operations_3 ();
     math_operations_4 ();
@@ -14,6 +19,8 @@ void tests () {
     iterator_next();
     iterator_value ();
     iterator_operators();
+    //addition ();
+    //subtraction();
 }
 void constructors_check_1 () {
     const int len = 5;
@@ -29,7 +36,7 @@ void constructors_check_1 () {
     // проверка на отрицательную длину
     std::cout << "trying size: " << -len << std::endl;
     try {
-        MyVector<int> vec(-len);
+        MyVector<int> vec_new(-len);
     } catch (Exceptions &ex) {
         std::cout << ex << std::endl;
     }
@@ -43,6 +50,8 @@ void constructors_check_1 () {
             std::cerr << "copy constuctor error" << std::endl;
         }
     }
+    MyVector<int> vecc(vec);
+    std::cout << vecc << std::endl;
 }
 
 void constructors_check_2 () {
@@ -61,7 +70,37 @@ void constructors_check_2 () {
         }
         j++;
     }
-    std::cout << std::endl;
+    std::cout << "trying empty list" << std::endl;
+    MyVector <int> vecc({});
+    std::cout << vecc << std::endl;
+}
+template<typename T>
+MyVector<T> create_vec(MyVector<T> &vec) {
+    MyVector <T> vector (vec);
+    return vector;
+}
+
+void constructor_move () {
+    std::cout << "move constructor check" << std::endl;
+    MyVector <int> vec ({1, 2, 3});
+    MyVector <int> temp_vec(vec);
+    std::cout << vec << "new vec: ";
+    MyVector <int> new_vec = create_vec(vec);
+    std::cout << new_vec << std::endl;
+    for (int i = 0; i < vec.get_length(); ++i) {
+        if (temp_vec[i] != new_vec[i]) {
+            std::cerr << "move constructor error.";
+        }
+    }
+    std::cout << "trying empty vector: " << std::endl;
+
+    try {
+        MyVector <int> empty_vec(1);
+        MyVector <int> temp_vec_2(empty_vec);
+        std::cout << temp_vec_2 << std::endl;
+    } catch (Exceptions &ex) {
+        std::cout << ex << std::endl;
+    }
 }
 
 void operations_check_1 () {
@@ -75,22 +114,26 @@ void operations_check_1 () {
     if (vec_1.get_length() != vec_2.get_length()) {
         std::cerr << "get_len error." << std::endl;
     }
+    std::cout << "trying empty vector" << std::endl;
+    MyVector <int> vec;
+    std::cout << "vector size = " << vec.get_length() << std::endl;
+    // для пустого !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
     // проверка set_elem()
     std::cout << "set elem check" << std::endl;
     const int elem = 5;
     const int ind = 2;
     vec_1.set_elem(ind, elem);
     std::cout << "expected element: " << elem << std::endl << "actual element: " << vec_1[ind] << std::endl;
-    std::cout << "trying index: " << -ind << std::endl;
+    std::cout << "trying index: " << ind + 5 << std::endl;
     try {
-        vec_1.set_elem(-ind, elem);
+        vec_1.set_elem(ind + 5, elem);
     } catch (Exceptions &ex) {
         std::cout << ex;
     }
     std::cout << std::endl;
 }
 
-void operations_check_2 () {
+void get_elem_check() {
     // проверка get_elem()
     MyVector<int> vec({1, 2, 3, 4, 5});
     const int index = 2;
@@ -102,6 +145,10 @@ void operations_check_2 () {
     } catch (Exceptions &ex) {
         std::cout << ex << std::endl;
     }
+
+}
+void to_array_check () {
+    MyVector<int> vec({1, 2, 3, 4, 5});
     // проверка to_array()
     std::cout << "to array check" << std::endl;
     const int* array = vec.to_array();
@@ -120,11 +167,115 @@ void operations_check_2 () {
     }
     std::cout << std::endl;
     delete []array;
+
+    std::cout << "trying empty vector" << std::endl;
+    MyVector<int> new_vec;
+
+    int *arr = new_vec.to_array();
+    if (arr == nullptr) {
+        std::cout << "arr is NULL" << std::endl << std::endl;
+    } else {
+        std::cerr << "to_array error.";
+    }
+
+}
+void operators_check () {
+    // перегрузка[]
+    std::cout << "operator [] check" << std::endl;
+    int num[3] = {5, 4, 7};
+    MyVector <int> vector({num[0], num[1], num[2]});
+    std::cout << vector << "vec[0] = " << vector[0] <<", vec[1] = " << vector[1] << ", vec[2] = " << vector[2]
+        << std::endl << std::endl;
+    for (int i = 0; i < vector.get_length(); ++i) {
+        if (vector[i] != num[i]) {
+            std::cerr << "operator [] error.";
+        }
+    }
+    // =========
+    std::cout << "operator = check" <<std::endl;
+    MyVector<int> vec({3, 2, 4, 5, 6});
+    MyVector <int> new_vec = vec;
+    std::cout << "first vector: " << vec << "second vector: " << new_vec << std::endl;
+    for (int i = 0; i < vec.get_length(); ++i) {
+        if (vec[i] != new_vec[i]) {
+            std::cerr << "operator = error.";
+        }
+    }
+    MyVector<int> new_vecc({3, 4,5, 5, 6, 7});
+    new_vecc = vec;
+    std::cout << new_vecc << std::endl;
+
+    std::cout << "trying empty vec" << std::endl;
+
+    try {
+        MyVector<int> vecc;
+        new_vec = vecc;
+        std::cout << vecc;
+    } catch (Exceptions &ex) {
+        std::cout << ex << std::endl;
+    }
+}
+
+void math_operations_0 () {
+    // перегрузка операторов
+
+    std::cout << "operator -= check:" << std::endl;
+    MyVector <int> basic_vec ({6, 4, 9, 4, 5});
+    MyVector <int> vector ({1, 4, 9, 7, 2});
+    MyVector <int> temp_vec(vector);
+    std::cout << "first vector: "<< vector << "second vector: " << basic_vec;
+    vector -= basic_vec;
+    std::cout << "vector -= basic_vec: "<< vector << std::endl;
+    for (int i = 0; i < vector.get_length(); ++i) {
+        if (vector[i] != temp_vec[i] - basic_vec[i]) {
+            std::cerr << "operator -= error.";
+        }
+    }
+    temp_vec = basic_vec;
+    vector = basic_vec;
+    std::cout << "trying -= equal vectors:" << std::endl << "first vector: " << vector << "second vector: " << basic_vec;
+    vector -= basic_vec;
+    std::cout << "result: " << vector << std::endl;
+    for (int i = 0; i < vector.get_length(); ++i) {
+        if (vector[i] != temp_vec[i] - basic_vec[i]) {
+            std::cerr << "operator -= error.";
+        }
+    }
+    std::cout << "trying sizes 4 and 5" << std::endl;
+    try {
+        MyVector <int> false_vec {1, 2, 3, 4};
+        vector -= false_vec;
+    } catch (Exceptions &ex) {
+        std::cout << ex << std::endl;
+    }
+
+    std::cout << "trying vec -= vec" << std::endl << basic_vec;
+    basic_vec -= basic_vec;
+    std::cout << basic_vec << std::endl;
+
+    std::cout << "trying vec -= empty vec" << std::endl;
+    try {
+        MyVector<int> vecc;
+        basic_vec -= vecc;
+        std::cout << basic_vec << std::endl;
+    } catch (Exceptions &ex) {
+        std::cout << ex << std::endl;
+    }
+
+}
+
+void check_test_add (MyVector<int> vector, MyVector <int> basic_vec) {
+    for (int i = basic_vec.get_length(); i < vector.get_length(); ++i) {
+        if (vector[i] != basic_vec[i - basic_vec.get_length()]) {
+            std::cerr << "operator +=/-= error.";
+        }
+    }
 }
 
 void math_operations_1 () {
     // перегрузка операторов
-    std::cout << "math operations check" << std::endl;
+
+    std::cout << "operator += check" << std::endl;
     MyVector <int> basic_vec ({1, 2, 3, 4, 5});
     MyVector <int> vector ({1, 4, 9, 12, 4});
     MyVector <int> temp_vec(vector);
@@ -136,15 +287,18 @@ void math_operations_1 () {
             std::cerr << "operator += error.";
         }
     }
-    vector = temp_vec;
-    std::cout << "first vector: "<< vector << "second vector: " << basic_vec;
-    vector -= basic_vec;
-    std::cout << "vector -= basic_vec: "<< vector << std::endl;
+
+    temp_vec = basic_vec;
+    vector = basic_vec;
+    std::cout << "trying += equal vectors:" << std::endl <<"first vector: " << vector << "second vector: " << basic_vec;
+    vector += basic_vec;
+    std::cout <<"result: " << vector << std::endl;
     for (int i = 0; i < vector.get_length(); ++i) {
-        if (vector[i] != temp_vec[i] - basic_vec[i]) {
-            std::cerr << "operator -= error.";
+        if (vector[i] != temp_vec[i] + basic_vec[i]) {
+            std::cerr << "operator += error.";
         }
     }
+
     std::cout << "trying sizes 4 and 5" << std::endl;
     try {
         MyVector <int> false_vec {1, 2, 3, 4};
@@ -152,6 +306,19 @@ void math_operations_1 () {
     } catch (Exceptions &ex) {
         std::cout << ex << std::endl;
     }
+    std::cout << "trying add vec += vec" << std::endl << vector;
+    vector += vector;
+    std::cout << vector << std::endl;
+
+    std::cout << "trying vec += empty vec" << std::endl;
+    try {
+        MyVector<int> vecc;
+        vector += vecc;
+        std::cout <<vector << std::endl;
+    } catch (Exceptions &ex) {
+        std::cout << ex << std::endl;
+    }
+
 }
 
 void math_operations_2 () {
@@ -183,6 +350,28 @@ void math_operations_2 () {
     } catch (Exceptions &ex) {
         std::cout << ex << std::endl;
     }
+}
+
+void math_empty_vec () {
+    std::cout << "trying empty vectors" << std::endl;
+    MyVector <int> vec_1;
+    MyVector <int> vec_2;
+    std::cout << "vector 1 + vector 2:" << std::endl;
+    vec_1 += vec_2;
+    std::cout << vec_1;
+
+    std::cout << "vector 1 - vector 2:" << std::endl;
+    vec_1 -= vec_2;
+    std::cout << vec_1;
+
+    std::cout << "vector*num: " << std::endl;
+    int num = 5;
+    vec_1 *= num;
+    std::cout << vec_1;
+
+    std::cout << "vector/num: " << std::endl;
+    vec_1 /= num;
+    std::cout << vec_1 << std::endl;
 }
 
 void math_operations_3 () {
@@ -272,6 +461,8 @@ void iterator_value () {
         if (*it != it.value()) {
             std::cerr << "iterator value error.";
             flag = false;
+        } else {
+            std::cout << it.value() << " ";
         }
     }
     flag ? std::cout << "test passed" << std::endl << std::endl : std::cout << "test not passed" << std::endl;
@@ -292,7 +483,7 @@ void iterator_operators () {
         ++it_1;
         ++it_2;
     }
-    flag ? std::cout << "test passed" << std::endl : std::cout << "test not passed" << std::endl;
+    flag ? std::cout << "test passed" << std::endl << std::endl : std::cout << "test not passed" << std::endl;
 }
 
 void iterator_increment () {
@@ -301,6 +492,79 @@ void iterator_increment () {
     Iterator <int> it = vector.iterator_begin();
     if (*it != vector[0]) {
         std::cerr << "iterator increment error.";
+    } else {
+        std::cout << "test passed" << std::endl << std::endl;
     }
-    std::cout << std::endl;
+}
+
+void addition () {
+    // перегрузка операторов
+    MyVector <int> basic_vec ({6, 4, 9, 4, 5});
+    MyVector <int> vector ({1, 4, 9, 7, 2});
+    MyVector <int> temp_vec(vector);
+    std::cout << "first vector: "<< vector << "second vector: " << basic_vec;
+    //vector.addition(basic_vec);
+    std::cout << "vector += basic_vec: "<< vector << std::endl;
+    check_test_add(vector, basic_vec);
+
+    //vector.addition(basic_vec);
+    std::cout << "trying equal vectors:" << std::endl <<"first vector: " << vector << "second vector: " << basic_vec;
+    //vector.addition(basic_vec);
+    std::cout <<"result: " << vector << std::endl;
+    check_test_add(vector, basic_vec);
+
+    std::cout << "trying sizes 4 and 5" << std::endl;
+
+    MyVector <int> false_vec {1, 2, 3, 4};
+    //vector.addition(false_vec);
+    std::cout << vector;
+    check_test_add(vector, false_vec);
+
+    std::cout << "trying vec + vec" << std::endl << vector;
+    //vector.addition(vector);
+    std::cout << vector << std::endl;
+    check_test_add(vector, vector);
+
+    std::cout << "trying vec + empty vec" << std::endl;
+    MyVector<int> vecc;
+    //vector.addition(vecc);
+    std::cout <<vector << std::endl;
+    check_test_add(vector, vecc);
+
+}
+
+void subtraction () {
+    // перегрузка операторов
+    MyVector <int> basic_vec ({6, 4, 9, 4, 5});
+    MyVector <int> vector ({1, 4, 9, 7, 2});
+    MyVector <int> temp_vec(vector);
+    std::cout << "first vector: "<< vector << "second vector: " << basic_vec;
+    vector.subtruction(basic_vec);
+    std::cout << "vector += basic_vec: "<< vector << std::endl;
+    check_test_add(vector, basic_vec);
+
+    //vector.subtruction(basic_vec);
+    std::cout << "trying equal vectors:" << std::endl <<"first vector: " << vector << "second vector: " << basic_vec;
+    //vector.subtruction(basic_vec);
+    std::cout <<"result: " << vector << std::endl;
+    check_test_add(vector, basic_vec);
+
+    std::cout << "trying sizes 4 and 5" << std::endl;
+
+    MyVector <int> false_vec {1, 2, 3, 4};
+    //vector.subtruction(false_vec);
+    std::cout << vector;
+    check_test_add(vector, false_vec);
+
+    std::cout << "trying vec + vec" << std::endl << vector;
+    //vector.subtruction(vector);
+    std::cout << vector << std::endl;
+    check_test_add(vector, vector);
+
+    std::cout << "trying vec + empty vec" << std::endl;
+    MyVector<int> vecc;
+    //vector.subtruction(vecc);
+    std::cout <<vector << std::endl;
+    check_test_add(vector, vecc);
+
 }
