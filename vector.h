@@ -17,9 +17,12 @@ private:
     void memory_alloc();
 public:
     explicit MyVector(int length);
+    MyVector();
     MyVector(const MyVector<T>& vect);
+    MyVector(MyVector <T> &&vect);
     explicit MyVector(std::initializer_list<T> lst);
     ~MyVector();
+
 
     int get_length() const;
     void set_elem(int index,const T& elem);
@@ -28,7 +31,9 @@ public:
 
     T& operator[](int index);
     MyVector<T>& operator =(const MyVector<T>& lst);
+    MyVector<T>& addition (const MyVector<T>& vect);
     MyVector<T>& operator +=(const MyVector<T>& vect);
+    MyVector<T>& subtruction (const MyVector<T>& vect);
     MyVector<T>& operator -=(const MyVector<T>& vect);
     MyVector<T>& operator *=(const T& val);
     MyVector<T>& operator /=(const T& val);
@@ -77,6 +82,12 @@ MyVector<T>::MyVector(const MyVector<T> &vect) { // конструктор ко�
     memory_alloc();
     copy_data( vect.data);
 }
+template<typename T>
+MyVector<T>::MyVector(MyVector<T> &&vect) {
+    data = vect.data;
+    count = vect.count;
+    vect.data = nullptr;
+}
 
 template <typename T>
 int MyVector<T>::get_length() const { // получить текущий размер
@@ -91,14 +102,16 @@ MyVector<T>::~MyVector() { // деструктор
 template<typename T>
 MyVector<T>::MyVector(std::initializer_list<T> lst):count(lst.size()){ // конструктор со списком инициализации
     if (count == 0) {
-        throw Exceptions("memory allocation error.");
+        data = nullptr;
+    } else {
+        memory_alloc();
+        int i = 0;
+        for (T val : lst) {
+            data[i] = val;
+            ++i;
+        }
     }
-    memory_alloc();
-    int i = 0;
-    for (T val : lst) {
-        data[i] = val;
-        ++i;
-    }
+
 }
 
 template <typename T>
@@ -119,14 +132,18 @@ T &MyVector<T>::get_elem(int index) { // получить элемент спи�
 
 template <typename T>
 T* MyVector<T>::to_array() { // создание массива
-    try {
-        T* array = new T[count];
-        for (int i = 0; i < count; ++i) {
-            array[i] = data[i];
+    if (data == nullptr) {
+        return nullptr;
+    } else {
+        try {
+            T* array = new T[count];
+            for (int i = 0; i < count; ++i) {
+                array[i] = data[i];
+            }
+            return array;
+        } catch (std::bad_alloc &ex) {
+            throw Exceptions("memory allocation error.");
         }
-        return array;
-    } catch (std::bad_alloc &ex) {
-        throw Exceptions("memory allocation error.");
     }
 }
 
@@ -142,11 +159,15 @@ MyVector<T> &MyVector<T>::operator=(const MyVector<T> &lst) { // перегру�
 
 template <typename _T>
 std::ostream& operator <<(std::ostream &os, MyVector<_T> &lst) {
-    os << "vector (";
-    for (int i = 0; i < lst.get_length() - 1; ++i) {
-        os << lst.data[i] << ", ";
+    if (lst.count == 0) {
+        os << "vector is null" << std::endl;
+    } else {
+        os << "vector (";
+        for (int i = 0; i < lst.get_length() - 1; ++i) {
+            os << lst.data[i] << ", ";
+        }
+        os << lst.data[lst.get_length() - 1] << ")\n";
     }
-    os << lst.data[lst.get_length() - 1] << ")\n";
     return os;
 }
 
@@ -156,6 +177,22 @@ T &MyVector<T>::operator[](int index) {
         throw Exceptions("incorrect index.");
     }
     return data[index];
+}
+
+template<typename T>
+MyVector<T> &MyVector<T>::addition (const MyVector<T> &vect) {
+    if (vect.data != nullptr) {
+        T *new_data = new T[count + vect.count];
+        for (int i = 0; i < count; ++i) {
+            new_data[i] = data[i];
+        }
+        for (int i = count; i < count + vect.count; ++i) {
+            new_data[i] = vect.data[i - count];
+        }
+        data = new_data;
+        count += vect.count;
+    }
+    return *this;
 }
 
 template<typename T>
@@ -170,6 +207,26 @@ MyVector<T> &MyVector<T>::operator+=(const MyVector<T> &vect) {
     return *this;
 }
 
+template<typename T>
+MyVector<T> &MyVector<T>::subtruction(const MyVector<T> &vect) {
+    if (vect.data == nullptr) {
+
+    } else if (vect.count > count) {
+        throw Exceptions("incorrect sizes");
+    } else {
+        T *new_data = new T[count - vect.count];
+        for (int i = 0; i < count; ++i) {
+            new_data[i] = data[i];
+        }
+        for (int i = count; i < count + vect.count; ++i) {
+            new_data[i] = vect.data[i - count];
+        }
+        data = new_data;
+        count += vect.count;
+
+    }
+    return *this;
+}
 template<typename T>
 MyVector<T> &MyVector<T>::operator-=(const MyVector<T> &vect) {
     if (count != vect.get_length()) {
@@ -234,6 +291,12 @@ MyVector<_T> operator/(const MyVector<_T> &v1, const _T &val) {
     new_vector /= val;
 
     return new_vector;
+}
+
+template<typename T>
+MyVector<T>::MyVector() {
+    count = 0;
+    data = nullptr;
 }
 
 #endif //VECTOR_VECTOR_H
