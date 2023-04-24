@@ -19,8 +19,8 @@ void tests () {
     iterator_next();
     iterator_value ();
     iterator_operators();
-    //addition ();
-    //subtraction();
+    addition ();
+
 }
 void constructors_check_1 () {
     const int len = 5;
@@ -264,14 +264,6 @@ void math_operations_0 () {
 
 }
 
-void check_test_add (MyVector<int> vector, MyVector <int> basic_vec) {
-    for (int i = basic_vec.get_length(); i < vector.get_length(); ++i) {
-        if (vector[i] != basic_vec[i - basic_vec.get_length()]) {
-            std::cerr << "operator +=/-= error.";
-        }
-    }
-}
-
 void math_operations_1 () {
     // перегрузка операторов
 
@@ -497,74 +489,37 @@ void iterator_increment () {
     }
 }
 
+void check_test_add (MyVector<int> vector, MyVector <int> basic_vec) {
+    for (int i = vector.get_length() - basic_vec.get_length(); i < vector.get_length(); ++i) {
+        if (vector[i] != basic_vec[i - vector.get_length() + basic_vec.get_length()]) {
+            std::cerr << "addition error.";
+        }
+    }
+}
+
 void addition () {
     // перегрузка операторов
     MyVector <int> basic_vec ({6, 4, 9, 4, 5});
     MyVector <int> vector ({1, 4, 9, 7, 2});
     MyVector <int> temp_vec(vector);
     std::cout << "first vector: "<< vector << "second vector: " << basic_vec;
-    //vector.addition(basic_vec);
+    vector.addition(basic_vec);
     std::cout << "vector += basic_vec: "<< vector << std::endl;
     check_test_add(vector, basic_vec);
 
-    //vector.addition(basic_vec);
-    std::cout << "trying equal vectors:" << std::endl <<"first vector: " << vector << "second vector: " << basic_vec;
-    //vector.addition(basic_vec);
-    std::cout <<"result: " << vector << std::endl;
-    check_test_add(vector, basic_vec);
-
     std::cout << "trying sizes 4 and 5" << std::endl;
-
     MyVector <int> false_vec {1, 2, 3, 4};
-    //vector.addition(false_vec);
-    std::cout << vector;
+    vector.addition(false_vec);
+    std::cout << vector << std::endl;
     check_test_add(vector, false_vec);
 
     std::cout << "trying vec + vec" << std::endl << vector;
-    //vector.addition(vector);
+    vector.addition(vector);
     std::cout << vector << std::endl;
     check_test_add(vector, vector);
 
     std::cout << "trying vec + empty vec" << std::endl;
     MyVector<int> vecc;
-    //vector.addition(vecc);
-    std::cout <<vector << std::endl;
-    check_test_add(vector, vecc);
-
-}
-
-void subtraction () {
-    // перегрузка операторов
-    MyVector <int> basic_vec ({6, 4, 9, 4, 5});
-    MyVector <int> vector ({1, 4, 9, 7, 2});
-    MyVector <int> temp_vec(vector);
-    std::cout << "first vector: "<< vector << "second vector: " << basic_vec;
-    vector.subtruction(basic_vec);
-    std::cout << "vector += basic_vec: "<< vector << std::endl;
-    check_test_add(vector, basic_vec);
-
-    //vector.subtruction(basic_vec);
-    std::cout << "trying equal vectors:" << std::endl <<"first vector: " << vector << "second vector: " << basic_vec;
-    //vector.subtruction(basic_vec);
-    std::cout <<"result: " << vector << std::endl;
-    check_test_add(vector, basic_vec);
-
-    std::cout << "trying sizes 4 and 5" << std::endl;
-
-    MyVector <int> false_vec {1, 2, 3, 4};
-    //vector.subtruction(false_vec);
-    std::cout << vector;
-    check_test_add(vector, false_vec);
-
-    std::cout << "trying vec + vec" << std::endl << vector;
-    //vector.subtruction(vector);
+    vector.addition(vecc);
     std::cout << vector << std::endl;
-    check_test_add(vector, vector);
-
-    std::cout << "trying vec + empty vec" << std::endl;
-    MyVector<int> vecc;
-    //vector.subtruction(vecc);
-    std::cout <<vector << std::endl;
-    check_test_add(vector, vecc);
-
 }
