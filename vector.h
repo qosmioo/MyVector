@@ -4,7 +4,7 @@
 #include <iostream>
 #include "exceptions.h"
 
-template<typename T>
+template <typename T>
 class Iterator;
 
 template <typename T>
@@ -23,7 +23,6 @@ public:
     explicit MyVector(std::initializer_list<T> lst);
     ~MyVector();
 
-
     int get_length() const;
     void set_elem(int index,const T& elem);
     T& get_elem(int index);
@@ -33,7 +32,6 @@ public:
     MyVector<T>& operator =(const MyVector<T>& lst);
     MyVector<T>& addition (const MyVector<T>& vect);
     MyVector<T>& operator +=(const MyVector<T>& vect);
-    MyVector<T>& subtruction (const MyVector<T>& vect);
     MyVector<T>& operator -=(const MyVector<T>& vect);
     MyVector<T>& operator *=(const T& val);
     MyVector<T>& operator /=(const T& val);
@@ -207,26 +205,6 @@ MyVector<T> &MyVector<T>::operator+=(const MyVector<T> &vect) {
     return *this;
 }
 
-template<typename T>
-MyVector<T> &MyVector<T>::subtruction(const MyVector<T> &vect) {
-    if (vect.data == nullptr) {
-
-    } else if (vect.count > count) {
-        throw Exceptions("incorrect sizes");
-    } else {
-        T *new_data = new T[count - vect.count];
-        for (int i = 0; i < count; ++i) {
-            new_data[i] = data[i];
-        }
-        for (int i = count; i < count + vect.count; ++i) {
-            new_data[i] = vect.data[i - count];
-        }
-        data = new_data;
-        count += vect.count;
-
-    }
-    return *this;
-}
 template<typename T>
 MyVector<T> &MyVector<T>::operator-=(const MyVector<T> &vect) {
     if (count != vect.get_length()) {
