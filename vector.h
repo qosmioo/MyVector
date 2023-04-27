@@ -16,7 +16,7 @@ private:
     void copy_data(T* arr);
     void memory_alloc();
 public:
-    explicit MyVector(int length);
+    explicit MyVector(int length); //параметризированный
     MyVector();
     MyVector(const MyVector<T>& vect);
     MyVector(MyVector <T> &&vect);
@@ -36,10 +36,10 @@ public:
     MyVector<T>& operator *=(const T& val);
     MyVector<T>& operator /=(const T& val);
 
-    template <typename _T> friend MyVector<_T> operator +(const MyVector<_T>& v1, const MyVector<_T>& v2);
-    template <typename _T> friend MyVector<_T> operator -(const MyVector<_T>& v1, const MyVector<_T>& v2);
-    template<typename _T> friend MyVector<_T> operator /(const MyVector<_T>& v1, const _T& val);
-    template<typename _T> friend MyVector<_T> operator *(const MyVector<_T>& v1, const _T& val);
+    MyVector<T> operator +(const MyVector<T>& v);
+    MyVector<T> operator -(const MyVector<T>& v);
+    MyVector<T> operator /(const T& val);
+    MyVector<T> operator *(const T& val);
     template <typename _T> friend std::ostream& operator <<(std::ostream &os, MyVector<_T> &lst);
 
     Iterator<T> iterator_begin(){return Iterator<T>(*this, 0);};
@@ -236,36 +236,34 @@ MyVector<T> &MyVector<T>::operator/=(const T &val) {
     return *this;
 }
 
-template<typename _T>
-MyVector<_T> operator+(const MyVector<_T> &v1, const MyVector<_T> &v2) {
-    MyVector<_T> new_vector (v1);
-    new_vector += v2;
-
-    return new_vector;
+template<typename T>
+MyVector<T> MyVector<T>::operator+(const MyVector<T> &v) {
+    MyVector<T> new_vec (*this);
+    new_vec += v;
+    return new_vec;
 }
 
-template<typename _T>
-MyVector<_T> operator-(const MyVector<_T> &v1, const MyVector<_T> &v2) {
-    MyVector<_T> new_vector (v1);
-    new_vector -= v2;
-
-    return new_vector;
+template<typename T>
+MyVector<T> MyVector<T>::operator-(const MyVector<T> &v) {
+    MyVector<T> new_vec (*this);
+    new_vec -= v;
+    return new_vec;
 }
 
-template<typename _T>
-MyVector<_T> operator*(const MyVector<_T> &v1, const _T &val) {
-    MyVector<_T> new_vector (v1);
+template<typename T>
+MyVector<T> MyVector<T>::operator*(const T &val) {
+    MyVector<T> new_vector (*this);
     new_vector *= val;
 
     return new_vector;
 }
 
-template<typename _T>
-MyVector<_T> operator/(const MyVector<_T> &v1, const _T &val) {
+template<typename T>
+MyVector<T> MyVector<T>::operator /(const T &val) {
     if (val == 0) {
         throw Exceptions("division by zero.");
     }
-    MyVector<_T> new_vector (v1);
+    MyVector<T> new_vector (*this);
     new_vector /= val;
 
     return new_vector;
