@@ -29,7 +29,7 @@ public:
     T* to_array();
 
     T& operator[](int index);
-    MyVector<T>& operator =(const MyVector<T>& lst);
+    MyVector<T>& operator =(const MyVector<T>& lst); // obj = obk1 = omk;
     MyVector<T>& addition (const MyVector<T>& vect);
     MyVector<T>& operator +=(const MyVector<T>& vect);
     MyVector<T>& operator -=(const MyVector<T>& vect);
@@ -43,7 +43,7 @@ public:
     template <typename _T> friend std::ostream& operator <<(std::ostream &os, MyVector<_T> &lst);
 
     Iterator<T> iterator_begin(){return Iterator<T>(*this, 0);};
-    Iterator<T> iterator_end(){return Iterator<T>(*this, get_length() - 1);};
+    Iterator<T> iterator_end(){return Iterator<T>(*this, get_length());};
 };
 
 template<typename T>
@@ -114,7 +114,7 @@ MyVector<T>::MyVector(std::initializer_list<T> lst):count(lst.size()){ // кон
 
 template <typename T>
 void MyVector<T>::set_elem(int index, const T &elem) { // изменить элемент вектора по индексу
-    if (index < 0 || index >= this->get_length()) {
+    if (index < 0 || index >= get_length()) {
         throw Exceptions ("incorrect index.");
     }
     data[index] = elem;
@@ -122,7 +122,7 @@ void MyVector<T>::set_elem(int index, const T &elem) { // изменить эл�
 
 template <typename T>
 T &MyVector<T>::get_elem(int index) { // получить элемент списка по индексу
-    if (index < 0 || index > get_length()) {
+    if (index < 0 || index >= get_length()) {
         throw Exceptions("incorrect index.");
     }
     return data[index - 1];
