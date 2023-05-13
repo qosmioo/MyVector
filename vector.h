@@ -85,6 +85,7 @@ MyVector<T>::MyVector(MyVector<T> &&vect) {
     data = vect.data;
     count = vect.count;
     vect.data = nullptr;
+    vect.count = 0;
 }
 
 template <typename T>
@@ -104,7 +105,7 @@ MyVector<T>::MyVector(std::initializer_list<T> lst):count(lst.size()){ // кон
     } else {
         memory_alloc();
         int i = 0;
-        for (T val : lst) {
+        for (T val : lst) { // фор ич, для него итератор
             data[i] = val;
             ++i;
         }
@@ -121,8 +122,8 @@ void MyVector<T>::set_elem(int index, const T &elem) { // изменить эл�
 }
 
 template <typename T>
-T &MyVector<T>::get_elem(int index) { // получить элемент списка по индексу
-    if (index < 0 || index >= get_length()) {
+T &MyVector<T>::get_elem(int index) { // получить элемент списка по индексу преим можем изменять
+    if (index < 0 || index > get_length()) {
         throw Exceptions("incorrect index.");
     }
     return data[index - 1];
@@ -166,7 +167,7 @@ std::ostream& operator <<(std::ostream &os, MyVector<_T> &lst) {
         }
         os << lst.data[lst.get_length() - 1] << ")\n";
     }
-    return os;
+    return os; //
 }
 
 template<typename T>
@@ -260,9 +261,6 @@ MyVector<T> MyVector<T>::operator*(const T &val) {
 
 template<typename T>
 MyVector<T> MyVector<T>::operator /(const T &val) {
-    if (val == 0) {
-        throw Exceptions("division by zero.");
-    }
     MyVector<T> new_vector (*this);
     new_vector /= val;
 
