@@ -20,7 +20,7 @@ void tests () {
     iterator_value ();
     iterator_operators();
     addition ();
-
+    iterator_operators_2 ();
 }
 void constructors_check_1 () {
     const int len = 5;
@@ -428,6 +428,7 @@ void iterator_begin_end () {
     flag ? std::cout << "test passed" << std::endl : std::cout << "test not passed" << std::endl;
     std::cout << "iterator end check" << std::endl;
     Iterator <int> it_2 = vector.iterator_end();
+    --it_2;
     it_2.is_end() ? std::cout << "test passed" << std::endl : std::cout << "test not passed" << std::endl;
 }
 
@@ -522,4 +523,17 @@ void addition () {
     MyVector<int> vecc;
     vector.addition(vecc);
     std::cout << vector << std::endl;
+}
+
+void iterator_operators_2 () {
+    MyVector <int> vec1 ({1, 3, 2, 0, 5});
+    MyVector <int> vec2 ({1, 3, 2, 0, 5});
+    Iterator <int> i_vec1 = vec1.iterator_begin();
+    Iterator <int> i_vec2 = vec2.iterator_begin();
+    if (i_vec1 == i_vec2) {
+        std::cout << "test passed" << std::endl;
+    }
+    if (i_vec1 == i_vec1) {
+        std::cout << "test passed" << std::endl;
+    }
 }
