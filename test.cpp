@@ -530,10 +530,14 @@ void iterator_operators_2 () {
     MyVector <int> vec2 ({1, 3, 2, 0, 5});
     Iterator <int> i_vec1 = vec1.iterator_begin();
     Iterator <int> i_vec2 = vec2.iterator_begin();
-    if (i_vec1 == i_vec2) {
-        std::cout << "test passed" << std::endl;
+    if (i_vec1 != i_vec2) {
+        std::cout << "diff vectors: test passed" << std::endl;
+    } else {
+        std::cout << "diff vectors: test not passed" << std::endl;
     }
     if (i_vec1 == i_vec1) {
-        std::cout << "test passed" << std::endl;
+        std::cout << "equal vectors: test passed" << std::endl;
+    } else {
+        std::cout << "diff vectors: test not passed" << std::endl;
     }
 }
