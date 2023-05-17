@@ -72,12 +72,16 @@ template <typename T> T& Iterator<T>::operator*() {
 
 template<typename T>
 bool Iterator<T>::operator==(Iterator<T> &b) {
-    return it == b.it;
+    return it == b.it && &vec == &b.vec;
 }
 
 template<typename T>
 bool Iterator<T>::operator!=(Iterator<T> &b) {
-    return it != b.it;
+    if ((&vec == &b.vec && it != b.it) || &vec != &b.vec) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 #endif //VECTOR_ITERATOR_H
